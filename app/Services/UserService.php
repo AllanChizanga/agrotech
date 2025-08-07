@@ -96,6 +96,31 @@ public function updateDataCollector($data)
         ]);
         return false;
     }
+}//endof funct 
+
+
+public function authenticateApi($data)
+{
+    // Use Auth::attempt for authentication
+    if (!Auth::attempt(['email' => $data['email'], 'password' => $data['password']])) {
+        // Authentication failed
+        return [
+            'success' => false,
+            'message' => 'Invalid credentials',
+        ];
+    }//endof if
+
+    
+    $user = Auth::user();
+
+    // Create a new Sanctum token for the user
+    $token = $user->createToken('api-token')->plainTextToken;
+
+    return [
+        'success' => true,
+        'user' => $user,
+        'token' => $token,
+    ];
 }
 
 

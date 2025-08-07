@@ -57,6 +57,19 @@ class QuestionnaireService
                     ->orderBy('created_at', 'desc')
                     ->get();
     }//endof function 
+ 
+
+    //function to get all forms for the data collector using the mobile  application 
+
+
+    public function getFormsForDataCollector()
+    {
+        // Fetch all forms belonging to the authenticated user, ordered by latest
+        return Form::all()
+                    ->orderBy('created_at', 'desc')
+                    ->get();
+    }//endof function 
+
 
 
     public function updateForm($data)
@@ -92,6 +105,20 @@ class QuestionnaireService
         return false;
     }
 
+
+    }//endof function 
+
+
+    //function to getQuestionsWithOptions  
+
+    public function getQuestionsWithOptions($questionnaire_id)
+    {
+    // Fetch all questions for the given questionnaire, each with its options
+    $questions = Question::where('questionnaire_id', $questionnaire_id)
+        ->with('options')
+        ->get();
+
+    return $questions;
 
     }//endof function
 

@@ -4,6 +4,7 @@ namespace App\Livewire;
 
 use App\Models\Form;
 use Livewire\Component;
+use App\Models\Question;
 use App\Models\QuestionType;
 use App\Services\OptionService;
 use App\Services\QuestionService;
@@ -14,6 +15,7 @@ class QuestionLivewire extends Component
     public $questions = []; 
     public $questionTypes = []; 
     public $options = []; 
+    public $options_edited = [];
     public $optionCounter =  1;
 
 
@@ -23,7 +25,19 @@ class QuestionLivewire extends Component
     public $question_order;
     public $is_required = false;
     public $depends_on_question;
-    public $depends_on_answer;
+    public $depends_on_answer; 
+
+    //editing question atrributes 
+
+    // Attributes for editing question
+    public $editingQuestionId = null;
+    public $editingQuestionText;
+    public $editingQuestionType;
+    public $editingQuestionOrder;
+    public $editingIsRequired = false;
+    public $editingDependsOnQuestion;
+    public $editingDependsOnAnswer;
+    public $editingOptions = [];
 
     //Form  Attributes 
     public $form_id;
@@ -104,6 +118,77 @@ class QuestionLivewire extends Component
     public function questionTypeChanged()
     {
     
+    } 
+
+    //function to open the modal to display the options 
+
+    public function openOptions($id,OptionService $service)
+    {  
+
+        // dd($service->getOptions($id));
+
+        $this->options_edited = $service->getOptions($id); 
+
+        $this->dispatch('open-options-modal');
+
+    } 
+
+    //function to delete a question 
+
+    public function deleteQuestion(Question $qtn,QuestionService $service)
+    { 
+
+        $res =  $service->delete($qtn);
+
+
+        if ($res) {
+            // Remove the deleted question from the local questions collection
+            $this->questions = $service->getAllQuestions($this->form_id);
+
+            // Optionally, show a success notification
+            $this->dispatch('question-deleted');
+        } else {
+            // Optionally, show an error notification
+            $this->dispatch('question-delete-failed');
+        }
+
+    } 
+
+
+    //function to edit the question 
+
+    public function editQuestion(Question $qtn)
+    {
+    $this->editingQuestionText = $qtn->question_text;
+    $this->editingQuestionType = $qtn->question_type;
+    $this->editingQuestionOrder = $qtn->question_order;
+    $this->editingIsRequired = $qtn->is_required;
+    $this->editingDependsOnQuestion = $qtn->depends_on_question;
+    $this->editingDependsOnAnswer = $qtn->depends_on_answer; 
+
+    $this->dispatch('open-edit-qtn-modal');
+
+    } 
+
+    //function to update question 
+
+    public function updateQuestion(QuestionService $service)
+    {  
+        // Validate the input fields for updating a question
+        $data = $this->validate([
+            'editingQuestionText' => 'required|string|max:255',
+            'editingQuestionOrder' => 'nullable|integer|min:1',
+         ]);
+
+        
+
+        $res = $service->update($data); 
+
+        if($res)
+        {
+            $this->dispatch('close-edit-modal');
+        }
+
     }
 
     public function mount($id, QuestionService $service)
@@ -131,7 +216,6 @@ class QuestionLivewire extends Component
     {   
 
      
-        // $this->optionCounter = session()->get('optionCounter', 1);
         return view('livewire.question-livewire');
     }
 }

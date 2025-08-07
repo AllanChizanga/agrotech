@@ -401,7 +401,12 @@
                     @forelse($questions as $question)
                         <tr>
                             <td>{{ $question->question_text }}</td>
-                            <td style="text-transform: capitalize;">{{ $question->question_type }}</td>
+                            <td style="text-transform: capitalize;">
+                                <span style="cursor: pointer;" wire:click="openOptions('{{ $question->id }}')"
+                                    class="text-decoration-underline">
+                                    {{ $question->question_type }}
+                                </span>
+                            </td>
                             <td>
                                 @if ($question->is_required)
                                     <span style="color: var(--primary-green); font-weight: 700;">Yes</span>
@@ -498,6 +503,107 @@
         </div>
     </div>
 
+
+    <!-- Modal to display options inside options array -->
+    <div wire:ignore.self class="modal fade" id="optionsModal" tabindex="-1" aria-labelledby="optionsModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header" style="border-bottom: none;">
+                    <h5 class="modal-title fw-bold" id="optionsModalLabel">Question Options</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    @if (count($options_edited) > 0)
+                        <ul class="list-group">
+                            @foreach ($options_edited as $option)
+                                <li class="list-group-item d-flex align-items-center">
+                                    <i class="bi bi-dot text-primary me-2"></i>
+                                    <span class="fw-semibold">{{ $option->option_text }}</span>
+                                </li>
+                            @endforeach
+                        </ul>
+                    @else
+                        <p class="text-muted">No options available for this question.</p>
+                    @endif
+                </div>
+                <div class="modal-footer" style="border-top: none;">
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal to edit question -->
+    <div wire:ignore.self class="modal fade" id="editQuestionModal" tabindex="-1"
+        aria-labelledby="editQuestionModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header" style="border-bottom: none;">
+                    <h5 class="modal-title fw-bold" id="editQuestionModalLabel">Edit Question</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <form wire:submit.prevent="updateQuestion">
+
+                    @if (session()->has('message'))
+                        <div class="alert alert-success" style="margin-bottom: 1rem;">
+                            {{ session('message') }}
+                        </div>
+                    @endif
+
+                    <label class="form-label" for="editingQuestionText">Question Text</label>
+                    <input type="text" class="form-control" id="editingQuestionText" placeholder="Enter question"
+                        wire:model.defer="editingQuestionText">
+
+                    @error('editingQuestionText')
+                        <div class="alert alert-danger" style="margin-bottom: 1rem;">
+                            {{ $message }}
+                        </div>
+                    @enderror
+
+                    <label class="form-label" for="editingQuestionOrder">Question Order</label>
+                    <input type="number" class="form-control" id="editingQuestionOrder" placeholder="Enter order"
+                        wire:model.defer="editingQuestionOrder" min="1">
+
+                    @error('editingQuestionOrder')
+                        <div class="alert alert-danger" style="margin-bottom: 1rem;">
+                            {{ $message }}
+                        </div>
+                    @enderror
+
+                    <div class="question-actions">
+                        <button type="submit" class="btn btn-primary" wire:loading.attr="disabled"
+                            style="border-radius: 2rem;">
+                            <span wire:loading wire:target="updateQuestion"
+                                class="spinner-border spinner-border-sm me-2" role="status"
+                                aria-hidden="true"></span>
+                            <i class="ti ti-check me-1"></i> Update
+                        </button>
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"
+                            style="border-radius: 2rem;">
+                            <i class="ti ti-refresh"></i> Cancel
+                        </button>
+                    </div>
+                </form>
+
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Listen for Livewire event to open the options modal
+        window.addEventListener('open-options-modal', function() {
+            var optionsModal = new bootstrap.Modal(document.getElementById('optionsModal'));
+            optionsModal.show();
+        });
+
+        // Handle the open-options-modal event to show the options modal
+        window.addEventListener('open-options-modal', function() {
+            var optionsModal = new bootstrap.Modal(document.getElementById('optionsModal'));
+            optionsModal.show();
+        });
+    </script>
+
     <script>
         document.addEventListener('question-saved', function() {
             var notyf = new Notyf({
@@ -519,6 +625,39 @@
                 }
             });
             notyf.success('Question saved successfully!');
+        });
+
+        document.addEventListener('question-deleted', function() {
+            var notyf = new Notyf({
+                duration: 5000,
+                position: {
+                    x: 'right',
+                    y: 'top'
+                }
+            });
+            notyf.success('Question deleted successfully!');
+        });
+
+        window.addEventListener('question-deleted', function() {
+            var notyf = new Notyf({
+                duration: 5000,
+                position: {
+                    x: 'right',
+                    y: 'top'
+                }
+            });
+            notyf.success('Question deleted successfully!');
+        });
+
+        document.addEventListener('open-edit-qtn-modal', function() {
+            var editModal = new bootstrap.Modal(document.getElementById('editQuestionModal'));
+            editModal.show();
+        });
+        document.addEventListener('close-edit-modal', function() {
+            var editModal = bootstrap.Modal.getInstance(document.getElementById('editQuestionModal'));
+            if (editModal) {
+                editModal.hide();
+            }
         });
     </script>
 </div>

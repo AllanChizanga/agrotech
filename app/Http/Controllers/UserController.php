@@ -43,7 +43,28 @@ class UserController extends Controller
 
         }
         return back()->with('error','Invalid Credentials');
-    }
+    }//endof function 
+
+
+    //function to authenticate apis  
+
+    public function authenticateApi(LoginRequest $request)
+    { 
+
+        
+        //validate  
+
+        $data = $request->validated(); 
+
+
+        //service  
+
+       $res =  $this->service->authenticateApi($data);
+
+        //response  
+        return response()->json(['data'=>$res],200);
+        
+    }//endof function 
 
  
    

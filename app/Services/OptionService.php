@@ -28,5 +28,16 @@ class OptionService
         }
        }
 
-    }//endof function 
+    }//endof function  
+
+
+    //function to get all the options of a given question 
+
+    public function getOptions($id)
+    {
+        
+    return Option::where('question_id', $id)
+        ->orderBy('option_order')
+        ->get();
+    }
 }
