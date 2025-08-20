@@ -25,7 +25,7 @@ class ResponsesRequest extends FormRequest
             //response model 
 
             'form_id'=>'required',//questionnaire  ---must be provided 
-            'respondent' => 'required|json',   //provide this ---this is a linear array 
+            'respondent' => 'required|array',   //provide this ---this is a linear array 
             'respondent.fullname' => 'required|string',
             'respondent.national_id' => 'required|string',
             'respondent.phone' => 'required|string',
@@ -33,7 +33,7 @@ class ResponsesRequest extends FormRequest
             'respondent.country' => 'required|string',
             'respondent.city' => 'required|string',
             'respondent.email' => 'required|email',
-            'answers' => 'required|json', //provide this ---answers is an array of arrays 
+            'answers' => 'required|array', //provide this ---answers is an array of arrays 
             'answers.*.question_id' => 'required',
             'answers.*.answer_text' => 'nullable',
             'answers.*.option_id' => 'nullable',
