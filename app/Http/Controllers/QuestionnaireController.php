@@ -41,7 +41,7 @@ class QuestionnaireController extends Controller
 
         $question = $this->service->getQuestionsWithOptions($questionnaire_id); 
 
-        return response()->json(['data'=>$res],200); 
+        return response()->json(['data'=>$question],200); 
 
 
     }
