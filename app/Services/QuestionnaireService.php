@@ -113,7 +113,7 @@ class QuestionnaireService
     public function getQuestionsWithOptions($questionnaire_id)
     {
     // Fetch all questions for the given questionnaire, each with its options
-    $questions = Question::where('questionnaire_id', $questionnaire_id)
+    $questions = Question::where('form_id', $questionnaire_id)
         ->with('options')
         ->get();
 
