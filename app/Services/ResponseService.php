@@ -4,7 +4,7 @@ namespace App\Services;
 
 use App\Models\Response;
 
-class ResponseServive
+class ResponseService
 {
     /**
      * Create a new class instance.
