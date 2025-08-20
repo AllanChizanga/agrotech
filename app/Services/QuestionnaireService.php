@@ -65,9 +65,7 @@ class QuestionnaireService
     public function getFormsForDataCollector()
     {
         // Fetch all forms belonging to the authenticated user, ordered by latest
-        return Form::all()
-                    ->orderBy('created_at', 'desc')
-                    ->get();
+        return Form::orderBy('created_at', 'desc')->get();
     }//endof function 
 
 
