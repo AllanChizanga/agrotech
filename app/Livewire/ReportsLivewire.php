@@ -11,15 +11,15 @@ class ReportsLivewire extends Component
 { 
 
     //load questionnaires 
-    public $forms; 
+    public $forms = []; 
 
     //questions of given questionnaire 
 
-    public $questions; 
+    public $questions = []; 
 
     //responses 
 
-    public $responses;
+    public $responses = [];
 
     public function load_forms_or_questionnaires(QuestionnaireService $service)
     { 

@@ -244,10 +244,9 @@
                     @empty
                         <tr>
                             <td colspan="4" style="text-align:center;color:var(--deep-green);font-weight:600;">
-                                @if ($selectedQuestionId)
+                                @if (empty($responses))
                                     No responses found for this question.
                                 @else
-                                    Please select a form and question to view responses.
                                 @endif
                             </td>
                         </tr>
