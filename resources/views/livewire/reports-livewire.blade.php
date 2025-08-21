@@ -232,14 +232,22 @@
                             <td>{{ $index + 1 }}</td>
                             <td>
                                 @if ($answer->response && $answer->response->respondent)
-                                    {{ $answer->response->respondent->name ?? 'N/A' }}
+                                    {{ $answer->response->respondent->fullname ?? 'N/A' }}
                                 @else
                                     N/A
                                 @endif
                             </td>
-                            <td>{{ $answer->answer_text ?? 'N/A' }}</td>
                             <td>
-                                {{ $answer->option->text ?? 'N/A' }}
+                                @if (isset($selectedQuestion) && $selectedQuestion->question_type === 'file-upload' && !empty($answer->answer_text))
+                                    <a href="{{ asset('storage/' . $answer->answer_text) }}" target="_blank" download>
+                                        Download File
+                                    </a>
+                                @else
+                                    {{ $answer->answer_text ?? 'N/A' }}
+                                @endif
+                            </td>
+                            <td>
+                                {{ $answer->option->option_text ?? 'N/A' }}
                             </td>
                         </tr>
                     @empty

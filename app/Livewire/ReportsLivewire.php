@@ -3,6 +3,7 @@
 namespace App\Livewire;
 
 use Livewire\Component;
+use App\Models\Question;
 use App\Services\QuestionService;
 use App\Services\ResponseService;
 use App\Services\QuestionnaireService;
@@ -26,7 +27,9 @@ class ReportsLivewire extends Component
 
     //question id 
 
-    public $selectedQuestionId;
+    public $selectedQuestionId; 
+
+    public $selectedQuestion; 
 
     public function load_forms_or_questionnaires(QuestionnaireService $service)
     { 
@@ -40,7 +43,7 @@ class ReportsLivewire extends Component
 
        
         
-     $this->questions = $service->getAllQuestions($this->selectedFormId);
+     $this->questions = $service->getAllQuestions($this->selectedFormId);  
 
    
 
@@ -50,7 +53,14 @@ class ReportsLivewire extends Component
     //load responses with respondent, answer and option text  
     public function responses(ResponseService $service)
     { 
-        $this->responses = $service->responses($this->selectedQuestionId);
+        $this->responses = $service->responses($this->selectedQuestionId); 
+
+        // Also load the selected question model for use in the view or logic
+        if ($this->selectedQuestionId) {
+            $this->selectedQuestion = Question::find($this->selectedQuestionId);
+        } else {
+            $this->selectedQuestion = null;
+        }
 
     } //endof func
  
