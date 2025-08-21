@@ -259,53 +259,37 @@
             <table class="respondents-table">
                 <thead>
                     <tr>
-                        <th style="width: 28%;">Name</th>
-                        <th style="width: 22%;">Email</th>
-                        <th style="width: 18%;">Status</th>
-                        <th style="width: 18%;">Registered</th>
-                        <th style="width: 14%;">Actions</th>
+                        <th style="width: 16%;">Full Name</th>
+                        <th style="width: 12%;">National ID</th>
+                        <th style="width: 10%;">Phone</th>
+                        <th style="width: 12%;">Address</th>
+                        <th style="width: 10%;">Country</th>
+                        <th style="width: 10%;">City</th>
+                        <th style="width: 14%;">Email</th>
+                        <th style="width: 8%;">Actions</th>
                     </tr>
                 </thead>
                 <tbody>
-                    <tr>
-                        <td>Jane Doe</td>
-                        <td>jane.doe@email.com</td>
-                        <td>
-                            <span class="status-badge status-active">Active</span>
-                        </td>
-                        <td>2024-06-01</td>
-                        <td>
-                            <button class="table-action-btn view"><i class="ti ti-eye"></i></button>
-                            <button class="table-action-btn edit"><i class="ti ti-edit"></i></button>
-                            <button class="table-action-btn delete"><i class="ti ti-trash"></i></button>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>John Smith</td>
-                        <td>john.smith@email.com</td>
-                        <td>
-                            <span class="status-badge status-pending">Pending</span>
-                        </td>
-                        <td>2024-05-28</td>
-                        <td>
-                            <button class="table-action-btn view"><i class="ti ti-eye"></i></button>
-                            <button class="table-action-btn edit"><i class="ti ti-edit"></i></button>
-                            <button class="table-action-btn delete"><i class="ti ti-trash"></i></button>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>Maria Garcia</td>
-                        <td>maria.garcia@email.com</td>
-                        <td>
-                            <span class="status-badge status-inactive">Inactive</span>
-                        </td>
-                        <td>2024-04-15</td>
-                        <td>
-                            <button class="table-action-btn view"><i class="ti ti-eye"></i></button>
-                            <button class="table-action-btn edit"><i class="ti ti-edit"></i></button>
-                            <button class="table-action-btn delete"><i class="ti ti-trash"></i></button>
-                        </td>
-                    </tr>
+                    @forelse($respondents as $respondent)
+                        <tr>
+                            <td>{{ $respondent->fullname }}</td>
+                            <td>{{ $respondent->national_id }}</td>
+                            <td>{{ $respondent->phone }}</td>
+                            <td>{{ $respondent->address }}</td>
+                            <td>{{ $respondent->country }}</td>
+                            <td>{{ $respondent->city }}</td>
+                            <td>{{ $respondent->email }}</td>
+                            <td>
+                                <button class="table-action-btn view"><i class="ti ti-eye"></i></button>
+                                <button class="table-action-btn edit"><i class="ti ti-edit"></i></button>
+                                <button class="table-action-btn delete"><i class="ti ti-trash"></i></button>
+                            </td>
+                        </tr>
+                    @empty
+                        <tr>
+                            <td colspan="8" style="text-align:center;">No respondents found.</td>
+                        </tr>
+                    @endforelse
                 </tbody>
             </table>
         </div>

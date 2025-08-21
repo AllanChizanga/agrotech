@@ -22,4 +22,13 @@ class RespondentsService
         return Respondent::create($data); 
 
     } //endof funtion 
-}
+
+    //function to load all respondents 
+
+public function getAllRespondents()
+{
+    return Respondent::all();
+}//endof func
+ 
+
+}//endof class
