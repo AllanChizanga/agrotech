@@ -19,7 +19,14 @@ class ReportsLivewire extends Component
 
     //responses 
 
-    public $responses = [];
+    public $responses = []; 
+
+    //form id 
+    public $selectedFormId; 
+
+    //question id 
+
+    public $selectedQuestionId;
 
     public function load_forms_or_questionnaires(QuestionnaireService $service)
     { 
@@ -28,19 +35,19 @@ class ReportsLivewire extends Component
     
 
     //load questions 
-    public function load_questions($id,QuestionService $service)
+    public function load_questions(QuestionService $service)
     { 
         
-     $this->questions = $service->getAllQuestions($id);
+     $this->questions = $service->getAllQuestions($this->selectedFormId);
 
     }//endof
 
 
     //load responses with respondent, answer and option text  
-    public function responses($qtn_id,ResponseService $service)
+    public function responses(ResponseService $service)
     { 
 
-        $this->responses = $service->responses($qtn_id);
+        $this->responses = $service->responses($this->selectedQuestionId);
 
     } 
  

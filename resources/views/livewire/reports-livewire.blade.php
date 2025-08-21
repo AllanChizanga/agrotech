@@ -195,8 +195,8 @@
             <div>
                 <!-- Filter by Form -->
                 <label for="formSelect" style="font-weight:600;">Form:</label>
-                <select id="formSelect" wire:model="selectedFormId"
-                    style="margin-right:1rem;padding:0.4rem 1rem;border-radius:0.7rem;">
+                <select id="formSelect" wire:model.live="selectedFormId"
+                    style="margin-right:1rem;padding:0.4rem 1rem;border-radius:0.7rem;" wire:change="load_questions">
                     <option value="">Select Form</option>
                     @foreach ($forms as $form)
                         <option value="{{ $form->id }}">{{ $form->title }}</option>
@@ -206,7 +206,7 @@
             <div>
                 <!-- Filter by Question (after form is selected) -->
                 <label for="questionSelect" style="font-weight:600;">Question:</label>
-                <select id="questionSelect" wire:model="selectedQuestionId" wire:change="loadResponses"
+                <select id="questionSelect" wire:model.live="selectedQuestionId" wire:change="responses"
                     style="padding:0.4rem 1rem;border-radius:0.7rem;">
                     <option value="">Select Question</option>
                     @foreach ($questions as $question)
