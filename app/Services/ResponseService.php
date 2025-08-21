@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Models\Answer;
 use App\Models\Response;
 
 class ResponseService
@@ -24,5 +25,23 @@ class ResponseService
             'respondent_id'=>$respondent_id,
         ]) ;
 
-    }//endof function
-}
+    }//endof function 
+
+    //function to return responses with respondents, answers, options   
+
+    public function responses($id)
+    { 
+
+        //question id 
+
+        //load answers to this question with respondent, option 
+
+        // Corrected: Add missing import and ensure Answer model is referenced
+        return Answer::where('question_id', $id)
+            ->with(['response.respondent', 'option'])
+            ->get();
+
+    }
+
+
+}//endof class 

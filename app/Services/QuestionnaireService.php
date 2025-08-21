@@ -17,7 +17,15 @@ class QuestionnaireService
 
         $this->authUser = auth()->user(); //authenticated user
         
-    }
+    } 
+
+    //function to get all forms  
+
+    public function get_all()
+    {
+        // Fetch all forms belonging to the authenticated user, ordered by latest
+        return Form::all();
+    }//endof func
 
     public function saveForm($data)
     {  

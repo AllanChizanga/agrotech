@@ -1,5 +1,4 @@
 <div>
-
     <style>
         :root {
             --primary-red: #e63946;
@@ -109,7 +108,8 @@
             border-spacing: 0;
         }
 
-        .reports-table th, .reports-table td {
+        .reports-table th,
+        .reports-table td {
             padding: 0.85rem 1.1rem;
             text-align: left;
         }
@@ -140,14 +140,17 @@
             font-weight: 700;
             letter-spacing: 0.5px;
         }
+
         .status-complete {
             background: var(--light-green);
             color: var(--primary-green);
         }
+
         .status-pending {
             background: var(--light-orange);
             color: var(--primary-orange);
         }
+
         .status-rejected {
             background: var(--light-red);
             color: var(--primary-red);
@@ -157,15 +160,19 @@
             .reports-container {
                 padding: 1.2rem 0.5rem 1rem 0.5rem;
             }
+
             .reports-header {
                 flex-direction: column;
                 align-items: flex-start;
                 gap: 0.7rem;
             }
+
             .reports-title {
                 font-size: 1.3rem;
             }
-            .reports-table th, .reports-table td {
+
+            .reports-table th,
+            .reports-table td {
                 padding: 0.5rem 0.4rem;
                 font-size: 0.95rem;
             }
@@ -180,70 +187,71 @@
             <div>
                 <h1 class="reports-title">Responses Management</h1>
                 <div class="reports-subtitle">
-                    View, analyze, and manage all collected responses in a beautiful, color-rich dashboard.
+                    Filter questions by form, then click a question to view all responses.
                 </div>
             </div>
         </div>
         <div class="reports-actions">
-            <button class="action-btn export">
-                <i class="ti ti-download"></i>
-                Export Data
-            </button>
-            <button class="action-btn refresh">
-                <i class="ti ti-refresh"></i>
-                Refresh
-            </button>
+            <div>
+                <!-- Filter by Form -->
+                <label for="formSelect" style="font-weight:600;">Form:</label>
+                <select id="formSelect" wire:model="selectedFormId"
+                    style="margin-right:1rem;padding:0.4rem 1rem;border-radius:0.7rem;">
+                    <option value="">Select Form</option>
+                    @foreach ($forms as $form)
+                        <option value="{{ $form->id }}">{{ $form->title }}</option>
+                    @endforeach
+                </select>
+            </div>
+            <div>
+                <!-- Filter by Question (after form is selected) -->
+                <label for="questionSelect" style="font-weight:600;">Question:</label>
+                <select id="questionSelect" wire:model="selectedQuestionId" wire:change="loadResponses"
+                    style="padding:0.4rem 1rem;border-radius:0.7rem;">
+                    <option value="">Select Question</option>
+                    @foreach ($questions as $question)
+                        <option value="{{ $question->id }}">{{ $question->text }}</option>
+                    @endforeach
+                </select>
+            </div>
         </div>
-        <div class="reports-table-container">
+        <div class="reports-table-container" style="margin-top:2rem;">
             <table class="reports-table">
                 <thead>
                     <tr>
                         <th>#</th>
                         <th>Respondent</th>
-                        <th>Date</th>
-                        <th>Status</th>
-                        <th>Score</th>
-                        <th>Actions</th>
+                        <th>Answer</th>
+                        <th>Option</th>
                     </tr>
                 </thead>
                 <tbody>
-                    <!-- Example rows, replace with dynamic data as needed -->
-                    <tr>
-                        <td>1</td>
-                        <td>Jane Doe</td>
-                        <td>2024-06-01</td>
-                        <td><span class="status-badge status-complete">Complete</span></td>
-                        <td>92%</td>
-                        <td>
-                            <button class="action-btn" style="padding:0.3rem 1rem;font-size:0.95rem;">
-                                <i class="ti ti-eye"></i> View
-                            </button>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>2</td>
-                        <td>John Smith</td>
-                        <td>2024-06-02</td>
-                        <td><span class="status-badge status-pending">Pending</span></td>
-                        <td>--</td>
-                        <td>
-                            <button class="action-btn" style="padding:0.3rem 1rem;font-size:0.95rem;">
-                                <i class="ti ti-eye"></i> View
-                            </button>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>3</td>
-                        <td>Mary Johnson</td>
-                        <td>2024-06-03</td>
-                        <td><span class="status-badge status-rejected">Rejected</span></td>
-                        <td>--</td>
-                        <td>
-                            <button class="action-btn" style="padding:0.3rem 1rem;font-size:0.95rem;">
-                                <i class="ti ti-eye"></i> View
-                            </button>
-                        </td>
-                    </tr>
+                    @forelse($responses as $index => $answer)
+                        <tr>
+                            <td>{{ $index + 1 }}</td>
+                            <td>
+                                @if ($answer->response && $answer->response->respondent)
+                                    {{ $answer->response->respondent->name ?? 'N/A' }}
+                                @else
+                                    N/A
+                                @endif
+                            </td>
+                            <td>{{ $answer->answer_text ?? 'N/A' }}</td>
+                            <td>
+                                {{ $answer->option->text ?? 'N/A' }}
+                            </td>
+                        </tr>
+                    @empty
+                        <tr>
+                            <td colspan="4" style="text-align:center;color:var(--deep-green);font-weight:600;">
+                                @if ($selectedQuestionId)
+                                    No responses found for this question.
+                                @else
+                                    Please select a form and question to view responses.
+                                @endif
+                            </td>
+                        </tr>
+                    @endforelse
                 </tbody>
             </table>
         </div>
