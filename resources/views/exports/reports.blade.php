@@ -16,12 +16,12 @@
                     <th>Option (if any)</th>
                     <th>Type</th>
                     <th>Respondent Name</th>
-                    <th>National ID</th>
-                    <th>Phone</th>
-                    <th>Address</th>
-                    <th>Country</th>
-                    <th>City</th>
-                    <th>Email</th>
+                    <th>Respondent National ID</th>
+                    <th>Respondent Phone</th>
+                    <th>Respondent Address</th>
+                    <th>Respondent Country</th>
+                    <th>Respondent City</th>
+                    <th>Respondent Email</th>
                 </tr>
             </thead>
             <tbody>
@@ -31,7 +31,7 @@
                         <tr>
                             <td>{{ $rowIndex++ }}</td>
                             <td>{{ $question->question_text }}</td>
-                            <td>{{ $answer->answer_text ?? 'N/A' }}</td>
+                            <td>{{ $answer->answer_text ?? '' }}</td>
                             <td>
                                 @if ($answer->option)
                                     {{ $answer->option->option_text }}
@@ -39,7 +39,7 @@
                                     -
                                 @endif
                             </td>
-                            <td>{{ $question->question_type ?? 'N/A' }}</td>
+                            <td>{{ $question->question_type ?? '' }}</td>
                             @php
                                 $respondent =
                                     $answer->response && $answer->response->respondent
