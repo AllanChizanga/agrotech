@@ -12,6 +12,8 @@
                 <tr>
                     <th>#</th>
                     <th>Question</th>
+                    <th>Answer</th>
+                    <th>Option (if any)</th>
                     <th>Type</th>
                     <th>Respondent Name</th>
                     <th>National ID</th>
@@ -20,8 +22,6 @@
                     <th>Country</th>
                     <th>City</th>
                     <th>Email</th>
-                    <th>Answer</th>
-                    <th>Option (if any)</th>
                 </tr>
             </thead>
             <tbody>
@@ -31,6 +31,14 @@
                         <tr>
                             <td>{{ $rowIndex++ }}</td>
                             <td>{{ $question->question_text }}</td>
+                            <td>{{ $answer->answer_text ?? 'N/A' }}</td>
+                            <td>
+                                @if ($answer->option)
+                                    {{ $answer->option->option_text }}
+                                @else
+                                    -
+                                @endif
+                            </td>
                             <td>{{ $question->question_type ?? 'N/A' }}</td>
                             @php
                                 $respondent =
@@ -45,14 +53,6 @@
                             <td>{{ $respondent->country ?? 'N/A' }}</td>
                             <td>{{ $respondent->city ?? 'N/A' }}</td>
                             <td>{{ $respondent->email ?? 'N/A' }}</td>
-                            <td>{{ $answer->answer_text ?? 'N/A' }}</td>
-                            <td>
-                                @if ($answer->option)
-                                    {{ $answer->option->option_text }}
-                                @else
-                                    -
-                                @endif
-                            </td>
                         </tr>
                     @endforeach
                 @endforeach
