@@ -25,8 +25,14 @@ class DataExport implements FromView
             ->with(['answers.response.respondent', 'answers.option'])
             ->get();
 
+        $questionnaire = null;
+        if ($reports->isNotEmpty()) {
+            $questionnaire = $reports->first()->form;
+        }
+
         return view('exports.reports', [
-            'reports' => $reports
+            'reports' => $reports,
+            'questionnaire'=>$questionnaire,
         ]);
     }
 }

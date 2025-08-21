@@ -1,5 +1,9 @@
 <div>
     <h2>Questionnaire Report</h2>
+    @if (isset($questionnaire))
+        <h3>Title: {{ $questionnaire->title ?? 'N/A' }}</h3>
+        <p>Description: {{ $questionnaire->description ?? 'N/A' }}</p>
+    @endif
     @if ($reports->isEmpty())
         <p>No questions found for this questionnaire.</p>
     @else
@@ -7,6 +11,7 @@
             <thead>
                 <tr>
                     <th>Question</th>
+                    <th>Type</th>
                     <th>Respondent</th>
                     <th>Answer</th>
                     <th>Option (if any)</th>
@@ -17,9 +22,10 @@
                     @foreach ($question->answers as $answer)
                         <tr>
                             <td>{{ $question->question_text }}</td>
+                            <td>{{ $question->question_type ?? 'N/A' }}</td>
                             <td>
                                 @if ($answer->response && $answer->response->respondent)
-                                    {{ $answer->response->respondent->name ?? 'N/A' }}
+                                    {{ $answer->response->respondent->fullname ?? 'N/A' }}
                                 @else
                                     N/A
                                 @endif
