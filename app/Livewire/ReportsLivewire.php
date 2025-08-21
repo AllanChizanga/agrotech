@@ -4,8 +4,10 @@ namespace App\Livewire;
 
 use Livewire\Component;
 use App\Models\Question;
+use App\Exports\DataExport;
 use App\Services\QuestionService;
 use App\Services\ResponseService;
+use Maatwebsite\Excel\Facades\Excel;
 use App\Services\QuestionnaireService;
 
 class ReportsLivewire extends Component
@@ -29,7 +31,15 @@ class ReportsLivewire extends Component
 
     public $selectedQuestionId; 
 
-    public $selectedQuestion; 
+    public $selectedQuestion;  
+
+
+    public function export()
+    { 
+         //selectedQuestionId  
+         return Excel::download(new DataExport($this->selectedFormId), 'data-report.xlsx');
+
+    }
 
     public function load_forms_or_questionnaires(QuestionnaireService $service)
     { 

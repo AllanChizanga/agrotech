@@ -180,15 +180,27 @@
     </style>
 
     <div class="reports-container">
-        <div class="reports-header">
-            <div class="reports-header-icon">
-                <i class="ti ti-chart-bar"></i>
+        <div class="reports-header" style="display: flex; align-items: center; justify-content: space-between;">
+            <div style="display: flex; align-items: center;">
+                <div class="reports-header-icon">
+                    <i class="ti ti-chart-bar"></i>
+                </div>
+                <div>
+                    <h1 class="reports-title">Responses Management</h1>
+                    <div class="reports-subtitle">
+                        Filter questions by form, then click a question to view all responses.
+                    </div>
+                </div>
             </div>
             <div>
-                <h1 class="reports-title">Responses Management</h1>
-                <div class="reports-subtitle">
-                    Filter questions by form, then click a question to view all responses.
-                </div>
+                <button 
+                    class="btn btn-success"
+                    style="padding: 0.5rem 1.2rem; border-radius: 0.7rem; font-weight: 600; font-size: 1rem;"
+                    wire:click="export"
+                >
+                    <i class="ti ti-download" style="margin-right: 0.5rem;"></i>
+                    Export
+                </button>
             </div>
         </div>
         <div class="reports-actions">
