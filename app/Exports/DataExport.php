@@ -4,6 +4,8 @@ namespace App\Exports;
 
 use App\Models\Question;
 use App\Exports\DataExport;
+use Illuminate\Contracts\View\View;
+use Maatwebsite\Excel\Concerns\FromView;
 
 class DataExport implements FromView
 { 
