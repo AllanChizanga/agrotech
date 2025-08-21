@@ -48,7 +48,8 @@ class QuestionLivewire extends Component
  
 
     public function saveQuestion(QuestionService $service,OptionService $optionService)
-    {    
+    {     
+       
 
         
         // Validate required fields
@@ -56,7 +57,8 @@ class QuestionLivewire extends Component
             'question_text' => 'required|string|max:255',
             'question_type' => 'required|string',
             'question_order' => 'required|integer|min:1',
-        ]);
+        ]); 
+      
 
         // If the question type requires options, validate options
         $typesWithOptions = ['multiple-choice', 'dropdown', 'checkbox'];
@@ -79,6 +81,7 @@ class QuestionLivewire extends Component
         ];
 
         $options = $this->options;
+      
 
         $question = $service->saveQuestion($data);
 

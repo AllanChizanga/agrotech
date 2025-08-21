@@ -36,9 +36,13 @@ class ReportsLivewire extends Component
 
     //load questions 
     public function load_questions(QuestionService $service)
-    { 
+    {  
+
+       
         
      $this->questions = $service->getAllQuestions($this->selectedFormId);
+
+   
 
     }//endof
 
@@ -46,10 +50,9 @@ class ReportsLivewire extends Component
     //load responses with respondent, answer and option text  
     public function responses(ResponseService $service)
     { 
-
         $this->responses = $service->responses($this->selectedQuestionId);
 
-    } 
+    } //endof func
  
 
     public function mount()
@@ -59,7 +62,12 @@ class ReportsLivewire extends Component
 
 
     public function render()
-    {
+    { 
+
+        if($this->selectedQuestionId)
+        {
+            $this->responses(new ResponseService());
+        }
         return view('livewire.reports-livewire');
     }
 }

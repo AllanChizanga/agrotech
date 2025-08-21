@@ -206,11 +206,12 @@
             <div>
                 <!-- Filter by Question (after form is selected) -->
                 <label for="questionSelect" style="font-weight:600;">Question:</label>
-                <select id="questionSelect" wire:model.live="selectedQuestionId" wire:change="responses"
-                    style="padding:0.4rem 1rem;border-radius:0.7rem;">
+
+                <select id="questionSelect" wire:model.live="selectedQuestionId"
+                    style="padding:0.4rem 1rem;border-radius:0.7rem;" wire:change="responses">
                     <option value="">Select Question</option>
                     @foreach ($questions as $question)
-                        <option value="{{ $question->id }}">{{ $question->text }}</option>
+                        <option value="{{ $question->id }}">{{ $question->question_text }}</option>
                     @endforeach
                 </select>
             </div>
