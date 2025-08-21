@@ -222,6 +222,8 @@
                     <tr>
                         <th>#</th>
                         <th>Respondent</th>
+                        <th>Question</th>
+                        <th>Question Type</th>
                         <th>Answer</th>
                         <th>Option</th>
                     </tr>
@@ -238,7 +240,17 @@
                                 @endif
                             </td>
                             <td>
-                                @if (isset($selectedQuestion) && $selectedQuestion->question_type === 'file-upload' && !empty($answer->answer_text))
+                                {{ $answer->question->question_text ?? ($selectedQuestion->question_text ?? 'N/A') }}
+                            </td>
+                            <td>
+                                {{ $answer->question->question_type ?? ($selectedQuestion->question_type ?? 'N/A') }}
+                            </td>
+                            <td>
+                                @if (
+                                    (isset($selectedQuestion) && $selectedQuestion->question_type === 'file-upload' && !empty($answer->answer_text)) ||
+                                        (isset($answer->question) &&
+                                            $answer->question->question_type === 'file-upload' &&
+                                            !empty($answer->answer_text)))
                                     <a href="{{ asset('storage/' . $answer->answer_text) }}" target="_blank" download>
                                         Download File
                                     </a>
@@ -252,7 +264,7 @@
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="4" style="text-align:center;color:var(--deep-green);font-weight:600;">
+                            <td colspan="6" style="text-align:center;color:var(--deep-green);font-weight:600;">
                                 @if (empty($responses))
                                     No responses found for this question.
                                 @else

@@ -38,7 +38,7 @@ class ResponseService
 
         // Corrected: Add missing import and ensure Answer model is referenced
         return Answer::where('question_id', $id)
-            ->with(['response.respondent', 'option'])
+            ->with(['response.respondent', 'option', 'question'])
             ->get();
 
     }
