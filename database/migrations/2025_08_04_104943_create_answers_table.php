@@ -16,6 +16,7 @@ return new class extends Migration
             $table->foreignId('response_id')->constrained()->onDelete('cascade');
             $table->foreignId('question_id')->constrained()->onDelete('cascade');
             $table->text('answer_text')->nullable();
+            $table->text('image_gps_location')->nullable();
             $table->foreignId('option_id')->nullable()->constrained()->onDelete('set null');
             $table->softDeletes();
             $table->timestamps();

@@ -18,26 +18,26 @@
       .left-sidebar {
           background: linear-gradient(135deg, var(--light-green) 0%, var(--light-orange) 100%);
           min-height: 100vh;
-          box-shadow: 2px 0 24px 0 rgba(230, 57, 70, 0.08);
-          border-right: 4px solid var(--primary-orange);
+          box-shadow: 2px 0 24px 0 rgba(67, 170, 139, 0.08);
+          border-right: 4px solid var(--primary-green);
           padding-top: 0;
       }
 
       .brand-logo {
-          background: linear-gradient(90deg, var(--primary-red) 0%, var(--primary-orange) 100%);
+          background: linear-gradient(90deg, var(--primary-green) 0%, var(--deep-green) 100%);
           padding: 1.5rem 1.5rem 1rem 1.5rem;
           border-radius: 0 0 var(--border-radius) var(--border-radius);
-          box-shadow: 0 2px 12px 0 rgba(230, 57, 70, 0.10);
+          box-shadow: 0 2px 12px 0 rgba(67, 170, 139, 0.10);
       }
 
       .brand-logo .logo-img img {
           height: 48px;
-          filter: drop-shadow(0 2px 8px var(--primary-orange));
+          filter: drop-shadow(0 2px 8px var(--primary-green));
       }
 
       .close-btn {
           color: var(--white);
-          background: var(--primary-red);
+          background: var(--primary-green);
           border-radius: 50%;
           width: 36px;
           height: 36px;
@@ -71,7 +71,7 @@
       }
 
       .nav-small-cap-icon {
-          color: var(--primary-orange);
+          color: var(--primary-green);
           font-size: 1.5rem;
       }
 
@@ -98,14 +98,14 @@
       .sidebar-link.active {
           background: linear-gradient(90deg, var(--primary-green) 0%, var(--primary-orange) 100%);
           color: var(--white) !important;
-          box-shadow: 0 4px 16px 0 rgba(255, 183, 3, 0.10);
-          border: 2px solid var(--primary-orange);
+          box-shadow: 0 4px 16px 0 rgba(67, 170, 139, 0.10);
+          border: 2px solid var(--primary-green);
       }
 
       .sidebar-link i {
           font-size: 1.3rem;
-          color: var(--primary-orange);
-          background: var(--light-orange);
+          color: var(--primary-green);
+          background: var(--light-green);
           border-radius: 50%;
           padding: 0.4rem;
           margin-right: 0.4rem;
@@ -115,7 +115,7 @@
       .sidebar-link:hover i,
       .sidebar-link.active i {
           color: var(--white);
-          background: var(--primary-red);
+          background: var(--primary-green);
       }
 
       .hide-menu {
@@ -177,7 +177,7 @@
                   <li class="sidebar-item">
                       <a class="sidebar-link" href="{{ route('questionnaires') }}" aria-expanded="false">
                           <i class="ti ti-aperture"></i>
-                          <span class="hide-menu">Questionnaires</span>
+                          <span class="hide-menu">Surveys</span>
                       </a>
                   </li>
                   <li class="sidebar-item">

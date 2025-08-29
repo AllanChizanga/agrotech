@@ -1,14 +1,23 @@
-    <!-- Fixed Topbar (restored template classes) -->
+    <!-- Fixed Topbar (green-dominant redesign) -->
     <style>
+        :root {
+            --primary-green: #43aa8b;
+            --secondary-green: #388e6c;
+            --accent-yellow: #ffb703;
+            --accent-light: #e9f7f1;
+            --white: #fff;
+            --shadow-green: 0 4px 24px 0 rgba(67, 170, 139, 0.10), 0 1.5px 4px 0 rgba(67, 170, 139, 0.08);
+        }
+
         .topbar {
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             z-index: 1030;
-            background: linear-gradient(90deg, #e63946 0%, #ffb703 100%);
-            box-shadow: 0 4px 24px 0 rgba(230, 57, 70, 0.08), 0 1.5px 4px 0 rgba(67, 170, 139, 0.08);
-            border-bottom: 4px solid #ffb703;
+            background: linear-gradient(90deg, var(--primary-green) 0%, var(--secondary-green) 100%);
+            box-shadow: var(--shadow-green);
+            border-bottom: 4px solid var(--accent-yellow);
             padding: 0;
         }
 
@@ -29,12 +38,12 @@
         .topbar .logo-img {
             height: 48px;
             width: 48px;
-            background: #fff7e0;
+            background: var(--accent-light);
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
-            box-shadow: 0 2px 8px 0 rgba(255, 183, 3, 0.13);
+            box-shadow: 0 2px 8px 0 rgba(67, 170, 139, 0.13);
         }
 
         .topbar .logo-img img {
@@ -46,19 +55,19 @@
             font-weight: 900;
             letter-spacing: 2px;
             font-size: 2rem;
-            color: #fff;
-            text-shadow: 0 2px 12px rgba(230, 57, 70, 0.18);
+            color: var(--white);
+            text-shadow: 0 2px 12px rgba(67, 170, 139, 0.18);
             margin: 0;
         }
 
         .topbar .brand-badge {
-            background: #43aa8b;
-            color: #fff;
+            background: var(--accent-yellow);
+            color: var(--primary-green);
             font-size: 1rem;
             font-weight: 700;
             border-radius: 1rem;
             padding: 0.3rem 1.1rem;
-            box-shadow: 0 1px 6px 0 rgba(67, 170, 139, 0.10);
+            box-shadow: 0 1px 6px 0 rgba(255, 183, 3, 0.10);
             margin-left: 1.2rem;
             letter-spacing: 1px;
             display: flex;
@@ -73,8 +82,8 @@
         }
 
         .topbar .topbar-action-btn {
-            background: #fff;
-            color: #e63946;
+            background: var(--white);
+            color: var(--primary-green);
             border: none;
             border-radius: 50%;
             width: 38px;
@@ -83,14 +92,14 @@
             align-items: center;
             justify-content: center;
             font-size: 1.3rem;
-            box-shadow: 0 1px 6px 0 rgba(255, 183, 3, 0.10);
+            box-shadow: 0 1px 6px 0 rgba(67, 170, 139, 0.10);
             transition: background 0.18s, color 0.18s;
             cursor: pointer;
         }
 
         .topbar .topbar-action-btn:hover {
-            background: #ffe5e9;
-            color: #b5172e;
+            background: var(--accent-light);
+            color: var(--secondary-green);
         }
 
         @media (max-width: 900px) {

@@ -16,6 +16,8 @@ class Answer extends Model
         'question_id',
         'answer_text',
         'option_id',
+        'image_gps_location',
+
     ];
     
     public function response(): BelongsTo

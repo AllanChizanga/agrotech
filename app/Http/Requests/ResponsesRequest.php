@@ -37,6 +37,8 @@ class ResponsesRequest extends FormRequest
             'answers.*.question_id' => 'required',
             'answers.*.answer_text' => 'nullable',
             'answers.*.option_id' => 'nullable',
+            'answers.*.image_gps_location' => 'nullable',
+            
         ];
     }
 

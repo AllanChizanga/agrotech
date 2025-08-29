@@ -21,5 +21,11 @@ class QuestionTypeSeeder extends Seeder
         QuestionType::create(['name' => 'date']);
         QuestionType::create(['name' => 'time']);
         QuestionType::create(['name' => 'file-upload']);
+        QuestionType::create(['name' => 'numerical-integer']);
+        QuestionType::create(['name' => 'decimal']);
+        QuestionType::create(['name' => 'image']);
+        QuestionType::create(['name' => 'video']);
+        QuestionType::create(['name' => 'document']);
+        QuestionType::create(['name' => 'other']);
     }
 }

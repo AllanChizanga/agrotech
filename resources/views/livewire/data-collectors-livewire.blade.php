@@ -1,6 +1,5 @@
 <div>
     <style>
-        /* Beautiful Red, Green, Orange Theme */
         :root {
             --primary-red: #e63946;
             --primary-green: #43aa8b;
@@ -23,17 +22,30 @@
             border: none;
         }
 
+        /* Redesigned Topbar */
         .dc-header {
-            background: linear-gradient(90deg, var(--primary-red) 0%, var(--primary-orange) 100%);
+            background: linear-gradient(90deg, var(--primary-green) 0%, #2e8c6a 100%);
             color: var(--white);
             border-radius: var(--border-radius) var(--border-radius) 0 0;
-            padding: 1.5rem 2rem;
+            padding: 1rem 1.5rem;
+            box-shadow: 0 2px 8px 0 rgba(67, 170, 139, 0.10);
+            border-bottom: 1px solid #e6f9f2;
+            display: flex;
+            align-items: center;
+            min-height: 56px;
         }
 
         .dc-title {
-            font-weight: 800;
-            letter-spacing: 1px;
-            font-size: 2rem;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+            font-size: 1.15rem;
+            margin-bottom: 0;
+            color: var(--white);
+            font-family: 'Segoe UI', 'Roboto', Arial, sans-serif;
+        }
+
+        .dc-header .dc-title {
+            flex: 1;
         }
 
         .dc-btn {
@@ -158,14 +170,13 @@
         }
 
         @media (max-width: 600px) {
-
             .dc-header,
             .modal-header {
-                padding: 1rem;
+                padding: 0.75rem 1rem;
             }
 
             .dc-title {
-                font-size: 1.3rem;
+                font-size: 1rem;
             }
         }
     </style>

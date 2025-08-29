@@ -193,11 +193,9 @@
                 </div>
             </div>
             <div>
-                <button 
-                    class="btn btn-success"
+                <button class="btn btn-success"
                     style="padding: 0.5rem 1.2rem; border-radius: 0.7rem; font-weight: 600; font-size: 1rem;"
-                    wire:click="export"
-                >
+                    wire:click="export">
                     <i class="ti ti-download" style="margin-right: 0.5rem;"></i>
                     Export
                 </button>
@@ -258,14 +256,33 @@
                                 {{ $answer->question->question_type ?? ($selectedQuestion->question_type ?? 'N/A') }}
                             </td>
                             <td>
-                                @if (
-                                    (isset($selectedQuestion) && $selectedQuestion->question_type === 'file-upload' && !empty($answer->answer_text)) ||
-                                        (isset($answer->question) &&
-                                            $answer->question->question_type === 'file-upload' &&
-                                            !empty($answer->answer_text)))
-                                    <a href="{{ asset('storage/' . $answer->answer_text) }}" target="_blank" download>
-                                        Download File
-                                    </a>
+                                @php
+                                    $qType =
+                                        $answer->question->question_type ?? ($selectedQuestion->question_type ?? null);
+                                    $filePath = !empty($answer->answer_text)
+                                        ? asset('storage/' . $answer->answer_text)
+                                        : null;
+                                @endphp
+
+                                @if (!empty($filePath) && in_array($qType, ['image', 'video', 'document']))
+                                    @if ($qType === 'image')
+                                        <a href="{{ $filePath }}" target="_blank" download>
+                                            <img src="{{ $filePath }}" alt="Image"
+                                                style="max-width: 100px; max-height: 100px; border-radius: 6px;">
+                                            <br>
+                                            Download Image
+                                        </a>
+                                    @elseif ($qType === 'video')
+                                        <a href="{{ $filePath }}" target="_blank" download>
+                                            Download Video
+                                        </a>
+                                    @elseif ($qType === 'document')
+                                        <a href="{{ $filePath }}" target="_blank" download>
+                                            Download Document
+                                        </a>
+                                    @else
+                                        {{ $answer->answer_text ?? 'N/A' }}
+                                    @endif
                                 @else
                                     {{ $answer->answer_text ?? 'N/A' }}
                                 @endif

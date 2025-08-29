@@ -17,7 +17,14 @@ class RespondentsService
     //function to create a new respondent 
 
     public function createRespondent($data)
-    { 
+    {  
+   
+
+        //check if the given respondent exists in the db
+        $respondent = Respondent::where('national_id', $data['national_id'])->first();
+        if ($respondent) {
+            return $respondent;
+        }
 
         return Respondent::create($data); 
 

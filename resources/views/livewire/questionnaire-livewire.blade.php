@@ -233,7 +233,7 @@
                 <i class="ti ti-clipboard-list"></i>
             </span>
             <div>
-                <h1 class="questionnaire-title">Questionnaire Form Management</h1>
+                <h1 class="questionnaire-title">Survey Form Management</h1>
                 <div class="questionnaire-subtitle">
                     Create, edit, and manage your questionnaires with ease.
                 </div>
