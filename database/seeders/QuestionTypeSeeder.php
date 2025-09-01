@@ -14,6 +14,7 @@ class QuestionTypeSeeder extends Seeder
     public function run(): void
     {
         QuestionType::create(['name' => 'paragraph']);
+        QuestionType::create(['name' => 'short-answer']);
         QuestionType::create(['name' => 'multiple-choice']);
         QuestionType::create(['name' => 'checkbox']);
         QuestionType::create(['name' => 'dropdown']);
