@@ -226,6 +226,11 @@
                 </select>
             </div>
         </div>
+      
+        <div style="margin-bottom:2rem;">
+            <h2 style="font-size:1.3rem;color:var(--deep-green);font-weight:700;">Responses Overview</h2>
+            <canvas id="responsesChart" height="80"></canvas>
+        </div>
         <div class="reports-table-container" style="margin-top:2rem;">
             <table class="reports-table">
                 <thead>
@@ -306,3 +311,50 @@
         </div>
     </div>
 </div>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script>
+    let chartInstance = null;
+
+    function renderChart(chartData) {
+        var ctx = document.getElementById('responsesChart').getContext('2d');
+        if (chartInstance) {
+            chartInstance.destroy();
+        }
+        chartInstance = new Chart(ctx, {
+            type: chartData.type || 'bar',
+            data: {
+                labels: chartData.labels,
+                datasets: [{
+                    label: 'Responses',
+                    data: chartData.data,
+                    backgroundColor: [
+                        'rgba(67, 170, 139, 0.7)',
+                        'rgba(255, 183, 3, 0.7)',
+                        'rgba(230, 57, 70, 0.7)',
+                        'rgba(181, 23, 46, 0.7)',
+                        'rgba(39, 115, 106, 0.7)',
+                        'rgba(251, 133, 0, 0.7)'
+                    ],
+                    borderRadius: 8
+                }]
+            },
+            options: {
+                plugins: {
+                    legend: { display: false }
+                },
+                scales: {
+                    y: { beginAtZero: true }
+                }
+            }
+        });
+    }
+
+    document.addEventListener('livewire:load', function () {
+        renderChart(@json($this->chartData));
+    });
+
+    window.addEventListener('update-chart', function (event) {
+        renderChart(event.detail.chartData);
+    });
+</script>

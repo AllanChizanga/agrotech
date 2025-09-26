@@ -72,6 +72,8 @@ class ReportsLivewire extends Component
             $this->selectedQuestion = null;
         }
 
+        
+        $this->dispatch('update-chart', chartData: $this->chartData);
     } //endof func
  
 
@@ -90,4 +92,66 @@ class ReportsLivewire extends Component
         }
         return view('livewire.reports-livewire');
     }
+
+   
+  
+    
+
+    public function getChartDataProperty()
+    {
+        $question = $this->selectedQuestion;
+        $responses = collect($this->responses);
+
+        if (!$question) return [
+            'labels' => [],
+            'data' => [],
+            'type' => 'bar',
+        ];
+
+        $type = $question->question_type;
+        $labels = [];
+        $data = [];
+
+        $optionTypes = [
+            'multiple-choice', 'checkbox', 'dropdown', 'linear-scale'
+        ];
+        $submittedTypes = [
+            'paragraph', 'short-answer', 'date', 'time', 'numerical-integer', 'decimal'
+        ];
+        $fileTypes = [
+            'file-upload', 'image', 'video', 'document'
+        ];
+
+        if (in_array($type, $optionTypes)) {
+            $options = $question->options ?? [];
+            foreach ($options as $option) {
+                $labels[] = $option->option_text;
+                $count = $responses->where('option_id', $option->id)->count();
+                $data[] = $count;
+            }
+        } elseif (in_array($type, $submittedTypes)) {
+            $labels = ['Submitted', 'Not Submitted'];
+            $submitted = $responses->where('answer_text', '!=', null)->count();
+            $notSubmitted = $responses->where('answer_text', null)->count();
+            $data = [$submitted, $notSubmitted];
+        } elseif (in_array($type, $fileTypes)) {
+            $labels = ['File Submitted', 'No File'];
+            $submitted = $responses->where('answer_text', '!=', null)->count();
+            $notSubmitted = $responses->where('answer_text', null)->count();
+            $data = [$submitted, $notSubmitted];
+        } else {
+            $labels = ['Answered', 'No Answer'];
+            $answered = $responses->where('answer_text', '!=', null)->count();
+            $noAnswer = $responses->where('answer_text', null)->count();
+            $data = [$answered, $noAnswer];
+        }
+
+        return [
+            'labels' => $labels,
+            'data' => $data,
+            'type' => 'bar',
+        ];
+    }
+
+
 }
