@@ -33,13 +33,19 @@ class AnswersService
             ) {
                $path =  $this->saveFile->saveFile($answer['answer_text']);
             }
+            $option_id = $answer['option_id'] ?? null;
+            if ($option_id == -1) {
+                $option_id = null;
+            }
+
             Answer::create([
                 'response_id' => $response_id,
                 'question_id' => $answer['question_id'] ?? null,
                 'answer_text' => isset($path) ? $path : ($answer['answer_text'] ?? null),
-                'option_id' => $answer['option_id'] ?? null,
+                'option_id' => $option_id,
                 'image_gps_location' => $answer['image_gps_location'] ?? null,
             ]);
+            unset($path); 
         }
         return true;
     }
