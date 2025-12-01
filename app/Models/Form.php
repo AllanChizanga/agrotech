@@ -24,4 +24,10 @@ class Form extends Model
     {
         return $this->belongsTo(User::class);
     }
+
+    public function surveySets()
+    {
+        return $this->belongsToMany(SurveySet::class, 'survey_set_form');
+    }
+
 }
