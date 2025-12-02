@@ -13,7 +13,13 @@ Route::controller(UserController::class)->group(function() {
     // Route for the data collector to login
     Route::post('login', 'authenticateApi');
 });
+Route::controller(ResponseController::class)->group(function() {
+        // Post responses with respondents
+        // Route::post('responses_with_respondents', 'responses');
 
+        // Get survey sets with progress for a respondent
+        Route::get('survey_sets/{respondentId}', 'surveySetsWithProgress');
+});
 // ------------------------
 // Protected routes (Sanctum)
 // ------------------------
@@ -38,7 +44,7 @@ Route::middleware('auth:sanctum')->group(function() {
         Route::post('responses_with_respondents', 'responses');
 
         // Get survey sets with progress for a respondent
-        Route::get('survey_sets/{respondentId}', 'surveySetsWithProgress');
+        // Route::get('survey_sets/{respondentId}', 'surveySetsWithProgress');
     });
 
 });

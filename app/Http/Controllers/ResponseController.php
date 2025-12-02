@@ -70,12 +70,27 @@ class ResponseController extends Controller
                             'total_forms' => $set->forms()->count(),
                         ]
                     );
-
+                    
                     $completedForms = ResponseModel::whereIn('form_id', $set->forms->pluck('id'))
                         ->where('respondent_id', $respondent->id)
                         ->pluck('form_id')
                         ->toArray();
+                        // Normalize and validate completed forms so it cannot exceed the number of forms in the set
+                    $completedForms = array_values(array_unique($completedForms));
+                    $totalForms = $set->forms->count();
 
+                    // Ensure completedForms only contains IDs that belong to this survey set
+                    $setFormIds = $set->forms->pluck('id')->toArray();
+                    $completedForms = array_values(array_intersect($setFormIds, $completedForms));
+
+                    // Cap the completed forms to the total number of forms in the set
+                    if (count($completedForms) > $totalForms) {
+                        $completedForms = array_slice($completedForms, 0, $totalForms);
+                    }
+
+                        // Ensure progress percentage and stored completed_forms do not exceed total_forms
+                    $progress->total_forms = $totalForms;
+                    $progress->completed_forms = min(count($completedForms), $totalForms);
                     $progress->completed_forms = count($completedForms);
                     $progress->save();
 
