@@ -13,6 +13,8 @@ use Illuminate\Support\Facades\Log;
 use App\Models\Respondent;
 use App\Models\SurveySet;
 use App\Models\Response as ResponseModel;
+use App\Models\Form;;
+use App\Models\RespondentProgress;
 
 class ResponseController extends Controller
 {
@@ -43,59 +45,53 @@ class ResponseController extends Controller
         DB::beginTransaction();
 
         try {
+
             // 1. Create or fetch respondent
             $respondent = $this->respondentService->createRespondent($data['respondent']);
 
-            // 2. Create response
+            // 2. Create the response record
             $response = $this->responseService->createResponse($data['form_id'], $respondent->id);
 
-            // 3. Create answers
+            // 3. Store answers
             $this->answersService->createAnswers($data['answers'], $response->id);
 
-            // 4. Update survey set progress
-            $form = \App\Models\Form::find($data['form_id']);
+            // 4. Update survey-set progress
             $updatedSurveySets = [];
+            $form = Form::with('surveySets.forms')->find($data['form_id']);
 
             if ($form) {
-                $surveySets = $form->surveySets;
 
-                foreach ($surveySets as $set) {
-                    $progress = \App\Models\RespondentProgress::firstOrCreate(
+                foreach ($form->surveySets as $set) {
+
+                    // ======== STEP 1: Load survey-set form IDs ========
+                    $setForms = $set->forms;
+                    $setFormIds = $setForms->pluck('id')->toArray();
+                    $totalForms = count($setFormIds);
+
+                    // ======== STEP 2: Find unique forms respondent completed in this set ========
+                    $completedForms = ResponseModel::where('respondent_id', $respondent->id)
+                        ->whereIn('form_id', $setFormIds)
+                        ->pluck('form_id')
+                        ->unique()
+                        ->toArray();
+
+                    // Count safely
+                    $completedCount = min(count($completedForms), $totalForms);
+
+                    // ======== STEP 3: Update or create progress row ========
+                    RespondentProgress::updateOrCreate(
                         [
                             'respondent_id' => $respondent->id,
                             'survey_set_id' => $set->id,
                         ],
                         [
-                            'completed_forms' => 0,
-                            'total_forms' => $set->forms()->count(),
+                            'total_forms' => $totalForms,
+                            'completed_forms' => $completedCount,
                         ]
                     );
-                    
-                    $completedForms = ResponseModel::whereIn('form_id', $set->forms->pluck('id'))
-                        ->where('respondent_id', $respondent->id)
-                        ->pluck('form_id')
-                        ->toArray();
-                        // Normalize and validate completed forms so it cannot exceed the number of forms in the set
-                    $completedForms = array_values(array_unique($completedForms));
-                    $totalForms = $set->forms->count();
 
-                    // Ensure completedForms only contains IDs that belong to this survey set
-                    $setFormIds = $set->forms->pluck('id')->toArray();
-                    $completedForms = array_values(array_intersect($setFormIds, $completedForms));
-
-                    // Cap the completed forms to the total number of forms in the set
-                    if (count($completedForms) > $totalForms) {
-                        $completedForms = array_slice($completedForms, 0, $totalForms);
-                    }
-
-                        // Ensure progress percentage and stored completed_forms do not exceed total_forms
-                    $progress->total_forms = $totalForms;
-                    $progress->completed_forms = min(count($completedForms), $totalForms);
-                    $progress->completed_forms = count($completedForms);
-                    $progress->save();
-
-                    // Include updated survey set progress in response
-                    $formsDetailed = $set->forms->map(function ($form) use ($completedForms) {
+                    // ======== STEP 4: Build detailed forms for response ========
+                    $formsDetailed = $setForms->map(function ($form) use ($completedForms) {
                         return [
                             'id' => $form->id,
                             'title' => $form->title,
@@ -103,13 +99,16 @@ class ResponseController extends Controller
                         ];
                     });
 
+                    // ======== STEP 5: Push survey-set data to API response ========
                     $updatedSurveySets[] = [
                         'survey_set_id' => $set->id,
                         'title' => $set->title,
                         'description' => $set->description,
-                        'total_forms' => $set->forms->count(),
-                        'completed_forms' => count($completedForms),
-                        'progress_percentage' => $set->forms->count() > 0 ? round(count($completedForms) / $set->forms->count() * 100, 2) : 0,
+                        'total_forms' => $totalForms,
+                        'completed_forms' => $completedCount,
+                        'progress_percentage' => $totalForms > 0
+                            ? round(($completedCount / $totalForms) * 100, 2)
+                            : 0,
                         'forms' => $formsDetailed,
                     ];
                 }
@@ -146,6 +145,7 @@ class ResponseController extends Controller
         }
     }
 
+
     /**
      * Get all survey sets for a respondent with progress and detailed info
      */
@@ -160,48 +160,63 @@ class ResponseController extends Controller
             ], 404);
         }
 
-        $surveySets = SurveySet::with(['forms'])->get();
+        // Load all survey sets with forms
+        $surveySets = SurveySet::with('forms')->get();
         $result = [];
 
         foreach ($surveySets as $set) {
-            $totalForms = $set->forms->count();
 
-            $completedForms = ResponseModel::whereIn('form_id', $set->forms->pluck('id'))
-                ->where('respondent_id', $respondentId)
-                ->pluck('form_id')
-                ->toArray();
+            // Fetch pre-calculated progress stored in RespondentProgress
+            $progress = RespondentProgress::where('respondent_id', $respondentId)
+                ->where('survey_set_id', $set->id)
+                ->first();
 
-            $formsDetailed = $set->forms->map(function ($form) use ($completedForms) {
+            $completedForms = $progress->completed_forms ?? 0;
+            $totalForms     = $progress->total_forms ?? $set->forms->count();
+
+            // Only calculate % here
+            $percentage = $totalForms > 0 
+                ? round(($completedForms / $totalForms) * 100, 2)
+                : 0;
+
+            // Build forms list
+            $formsDetailed = $set->forms->map(function ($form) use ($progress) {
+                $completed = $progress 
+                    ? in_array($form->id, $progress->completed_form_ids ?? [])
+                    : false;
+
                 return [
-                    'id' => $form->id,
-                    'title' => $form->title,
-                    'completed' => in_array($form->id, $completedForms),
+                    'id'        => $form->id,
+                    'title'     => $form->title,
+                    'completed' => $completed,
                 ];
             });
 
+            // Add to final result
             $result[] = [
-                'survey_set_id' => $set->id,
-                'title' => $set->title,
-                'description' => $set->description,
-                'total_forms' => $totalForms,
-                'completed_forms' => count($completedForms),
-                'progress_percentage' => $totalForms > 0 ? round(count($completedForms) / $totalForms * 100, 2) : 0,
-                'forms' => $formsDetailed,
+                'survey_set_id'        => $set->id,
+                'title'                => $set->title,
+                'description'          => $set->description,
+                'total_forms'          => $totalForms,
+                'completed_forms'      => $completedForms,
+                'progress_percentage'  => $percentage,
+                'forms'                => $formsDetailed,
             ];
         }
 
         return response()->json([
             'success' => true,
             'respondent' => [
-                'id' => $respondent->id,
-                'fullname' => $respondent->fullname,
+                'id'          => $respondent->id,
+                'fullname'    => $respondent->fullname,
                 'national_id' => $respondent->national_id,
-                'phone' => $respondent->phone,
-                'email' => $respondent->email,
-                'city' => $respondent->city,
-                'country' => $respondent->country,
+                'phone'       => $respondent->phone,
+                'email'       => $respondent->email,
+                'city'        => $respondent->city,
+                'country'     => $respondent->country,
             ],
             'survey_sets' => $result,
         ], 200);
     }
+
 }

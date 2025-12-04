@@ -96,6 +96,11 @@ class QuestionnaireService
         }
         return $query->get();
     }
+    public function getFormsForDataCollector()
+    {
+        // Fetch all forms belonging to the authenticated user, ordered by latest
+        return Form::orderBy('created_at', 'desc')->get();
+    }
 
     public function saveSet(array $data)
     {
