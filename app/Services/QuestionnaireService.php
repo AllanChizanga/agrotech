@@ -52,7 +52,9 @@ class QuestionnaireService
 
     public function updateForm(array $data)
     {
+        // dd($data);
         $form = Form::where('id', $data['id'])->where('user_id', $this->authUser->id)->first();
+        // dd($form);
         if (!$form) return false;
 
         $form->title = $data['editingFormTitle'] ?? $data['title'] ?? $form->title;
@@ -98,8 +100,16 @@ class QuestionnaireService
     }
     public function getFormsForDataCollector()
     {
-        // Fetch all forms belonging to the authenticated user, ordered by latest
-        return Form::orderBy('created_at', 'desc')->get();
+        return Form::query()
+            ->with([
+                'surveySets' => function ($query) {
+                    $query->orderBy('survey_set_form.order', 'asc');
+                }
+            ])
+            ->where('status', 'published')
+            ->where('user_id', $this->authUser->id)
+            ->latest()
+            ->get();
     }
 
     public function saveSet(array $data)
@@ -177,21 +187,37 @@ class QuestionnaireService
     }
 
     public function detachFormFromSet($setId, $formId)
-    {
-        try {
-            SurveySetForm::where('survey_set_id', $setId)->where('form_id', $formId)->delete();
-            $items = SurveySetForm::where('survey_set_id', $setId)->orderBy('order')->get();
-            $order = 1;
-            foreach ($items as $item) {
-                $item->order = $order++;
-                $item->save();
-            }
-            return true;
-        } catch (Exception $e) {
-            Log::error('Failed to detach form: '.$e->getMessage(), ['set_id' => $setId, 'form_id' => $formId]);
-            return false;
+{
+    DB::beginTransaction();
+    try {
+        // delete the record
+        SurveySetForm::where('survey_set_id', $setId)
+            ->where('form_id', $formId)
+            ->delete();
+
+        // fetch all remaining items ordered ASC
+        $items = SurveySetForm::where('survey_set_id', $setId)
+            ->orderBy('order')
+            ->get();
+
+        // reassign order starting from 1
+        foreach ($items as $index => $item) {
+            $item->update(['order' => $index + 1]);
         }
+
+        DB::commit();
+        return true;
+
+    } catch (Exception $e) {
+        DB::rollBack();
+        Log::error('Failed to detach form: '.$e->getMessage(), [
+            'set_id' => $setId,
+            'form_id' => $formId,
+        ]);
+        return false;
     }
+}
+
 
     public function updateFormOrder($setId, array $orderedIds)
     {

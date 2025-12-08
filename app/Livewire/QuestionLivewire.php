@@ -11,6 +11,7 @@ use App\Services\QuestionService;
 
 class QuestionLivewire extends Component
 {   
+    
 
     public $questions = []; 
     public $questionTypes = []; 

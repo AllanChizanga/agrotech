@@ -20,3 +20,4 @@ class RespondentsLivewire extends Component
         return view('livewire.respondents-livewire');
     }
 }
+

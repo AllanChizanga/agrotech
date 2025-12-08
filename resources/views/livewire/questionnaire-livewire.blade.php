@@ -293,9 +293,10 @@
                         <div class="mb-3">
                             <label for="editStatus" class="form-label fw-bold">Status</label>
                             <select class="form-select" id="editStatus" wire:model.defer="editingFormStatus">
-                                <option value="Published">Published</option>
-                                <option value="Draft">Draft</option>
-                                <option value="Archived">Archived</option>
+                            <option value="" selected >Select status</option>
+                                <option value="published">Published</option>
+                                <option value="draft">Draft</option>
+                                <option value="archived">Archived</option>
                             </select>
                             @error('editingFormStatus')
                                 <span class="text-danger">{{ $message }}</span>

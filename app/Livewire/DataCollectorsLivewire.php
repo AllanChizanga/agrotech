@@ -87,6 +87,7 @@ class DataCollectorsLivewire extends Component
             $data['password'] = $this->edit_password;
         }
 
+        
         $data['id'] = $this->edit_id;
         $updated = $service->updateDataCollector($data);
 

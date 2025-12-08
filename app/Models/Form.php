@@ -27,7 +27,9 @@ class Form extends Model
 
     public function surveySets()
     {
-        return $this->belongsToMany(SurveySet::class, 'survey_set_form');
+        return $this->belongsToMany(SurveySet::class, 'survey_set_form')
+            ->withPivot('order')
+            ->orderBy('survey_set_form.order');
     }
 
 }

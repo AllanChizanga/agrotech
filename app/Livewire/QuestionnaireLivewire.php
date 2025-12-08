@@ -237,19 +237,23 @@ class QuestionnaireLivewire extends Component
         $this->dispatch('open-edit-form-modal');
     }
 
+    
     public function updateForm(QuestionnaireService $service)
     {
-        dd($service);
+        // dd($this);
         $data = $this->validate([
             'editingFormTitle' => 'required|string|max:255',
             'editingFormDescription' => 'required|string',
             'editingFormCategory' => 'required|string|max:255',
-            'editingFormStatus' => 'required|string|in:Published,Draft,Archived,Active',
+            'editingFormStatus' => 'required|string|in:published,draft,archived,active',
         ]);
+        // dd($data);
+       
 
         $data['id'] = $this->editingFormId;
+         
         $res = $service->updateForm($data);
-
+        // dd($res);
         if ($res) {
             $this->forms = $service->getAllForms();
             $this->dispatch('form-updated'); // <-- new

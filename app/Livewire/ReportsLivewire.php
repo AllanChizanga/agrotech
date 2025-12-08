@@ -96,6 +96,7 @@ class ReportsLivewire extends Component
    
   
     
+    
 
     public function getChartDataProperty()
     {
