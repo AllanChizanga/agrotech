@@ -302,6 +302,17 @@
                                 <span class="text-danger">{{ $message }}</span>
                             @enderror
                         </div>
+
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">Owner (User)</label>
+                            <select class="form-select" wire:model.defer="editingFormUserId" required>
+                                <option value="">Select user</option>
+                                @foreach($users as $u)
+                                    <option value="{{ $u->id }}">{{ $u->name ?? $u->email }}</option>
+                                @endforeach
+                            </select>
+                            @error('editingFormUserId') <span class="text-danger">{{ $message }}</span> @enderror
+                        </div>
                     </div>
                     <div class="modal-footer" style="border-top: none;">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"
@@ -330,6 +341,7 @@
                 <tr style="text-align:left; border-bottom:1px solid #eee;">
                     <th>Title</th>
                     <th>Description</th>
+                    <th>Owner</th>
                     <th>Category</th>
                     <th>Status</th>
                     <th>Actions</th>
@@ -340,6 +352,7 @@
                     <tr>
                         <td>{{ $f->title }}</td>
                         <td>{{ Str::limit($f->description, 80) }}</td>
+                        <td>{{ $f->user->name ?? $f->user->email ?? 'User #'.$f->user_id }}</td>
                         <td>{{ $f->category }}</td>
                         <td>{{ $f->status ?? 'Active' }}</td>
                         <td class="flex" style="gap:.5rem;">
@@ -388,6 +401,17 @@
                             <label class="form-label fw-bold">Category</label>
                             <input type="text" class="form-control" wire:model.defer="category" required>
                             @error('category') <span class="text-danger">{{ $message }}</span> @enderror
+                        </div>
+
+                        <div class="mb-3">
+                                <label class="form-label fw-bold">Owner (User)</label>
+                                <select class="form-select" wire:model.defer="selectedUserId" required>
+                                    <option value="">Select user</option>
+                                    @foreach($users as $u)
+                                        <option value="{{ $u->id }}">{{ $u->name ?? $u->email }}</option>
+                                    @endforeach
+                                </select>
+                                @error('selectedUserId') <span class="text-danger">{{ $message }}</span> @enderror
                         </div>
                     </div>
                     <div class="modal-footer" style="border-top:none;">

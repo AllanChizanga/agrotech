@@ -14,20 +14,37 @@ use Illuminate\Support\Facades\DB;
 class QuestionnaireService
 {
     private $authUser;
+    private $isAdmin;
+
 
     public function __construct()
     {
         $this->authUser = auth()->user();
+        $this->isAdmin = false;
+        if ($this->authUser) {
+            // prefer explicit is_admin flag if present, otherwise check role column
+            $this->isAdmin = (bool) ($this->authUser->is_admin ?? false) || ($this->authUser->role ?? '') === 'admin';
+        }
+        // dd($this->isAdmin);
+
     }
 
     // -----------------------
     // FORMS
     // -----------------------
-    public function getAllForms()
+    public function getAllForms($userId = null)
     {
-        return Form::where('user_id', $this->authUser->id)
-            ->orderBy('created_at', 'desc')
-            ->get();
+        $query = Form::orderBy('created_at', 'desc');
+        if ($userId) {
+            $query->where('user_id', $userId);
+            return $query->get();
+        }
+        if ($this->isAdmin) {            
+            return $query->get();
+        }
+        // non-admin: only their own forms
+        return $query->where('user_id', $this->authUser->id)->get();
+
     }
     public function get_all()
     {
@@ -38,7 +55,7 @@ class QuestionnaireService
 
     public function saveForm(array $data)
     {
-        $data['user_id'] = $this->authUser->id;
+        $data['user_id'] = $data['user_id'] ?? $this->authUser->id;
         $data['is_public'] = $data['is_public'] ?? true;
 
         try {
@@ -53,7 +70,7 @@ class QuestionnaireService
     public function updateForm(array $data)
     {
         // dd($data);
-        $form = Form::where('id', $data['id'])->where('user_id', $this->authUser->id)->first();
+        $form = Form::find($data['id'] ?? null);
         // dd($form);
         if (!$form) return false;
 
@@ -61,6 +78,10 @@ class QuestionnaireService
         $form->description = $data['editingFormDescription'] ?? $data['description'] ?? $form->description;
         $form->category = $data['editingFormCategory'] ?? $data['category'] ?? $form->category;
         $form->status = $data['editingFormStatus'] ?? $data['status'] ?? $form->status;
+
+        if (isset($data['user_id'])) {
+            $form->user_id = $data['user_id'];
+        }
 
         try {
             $form->save();

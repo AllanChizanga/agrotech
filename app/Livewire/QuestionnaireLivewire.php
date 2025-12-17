@@ -7,6 +7,7 @@ use App\Models\SurveySet;
 use Livewire\Component;
 use Livewire\Attributes\Validate;
 use App\Services\QuestionnaireService;
+use App\Models\User;
 
 class QuestionnaireLivewire extends Component
 {
@@ -20,6 +21,9 @@ class QuestionnaireLivewire extends Component
     #[Validate('required')]
     public $category;
 
+    #[Validate('required|exists:users,id')]
+    public $selectedUserId;               
+    public $users = [];    
     // -----------------------
     // Form editing attributes
     // -----------------------
@@ -28,6 +32,8 @@ class QuestionnaireLivewire extends Component
     public $editingFormDescription;
     public $editingFormCategory;
     public $editingFormStatus = 'Active';
+    public $editingFormUserId;            
+
 
     // -----------------------
     // Survey Sets attributes
@@ -216,6 +222,8 @@ class QuestionnaireLivewire extends Component
     public function save(QuestionnaireService $service)
     {
         $data = $this->validate();
+        $data['user_id'] = $this->selectedUserId;
+
         $res = $service->saveForm($data);
 
         if ($res) {
@@ -234,6 +242,7 @@ class QuestionnaireLivewire extends Component
         $this->editingFormDescription = $form->description;
         $this->editingFormCategory = $form->category;
         $this->editingFormStatus = $form->status ?? 'Active';
+        $this->editingFormUserId = $form->user_id; 
         $this->dispatch('open-edit-form-modal');
     }
 
@@ -246,12 +255,15 @@ class QuestionnaireLivewire extends Component
             'editingFormDescription' => 'required|string',
             'editingFormCategory' => 'required|string|max:255',
             'editingFormStatus' => 'required|string|in:published,draft,archived,active',
+            'editingFormUserId' => 'required|exists:users,id',
+
         ]);
         // dd($data);
        
 
         $data['id'] = $this->editingFormId;
-         
+        $data['user_id'] = $this->editingFormUserId; 
+
         $res = $service->updateForm($data);
         // dd($res);
         if ($res) {
@@ -295,6 +307,8 @@ class QuestionnaireLivewire extends Component
         $this->forms = $service->getAllForms();
         $this->loadProgress();
         $this->loadSelectedSetForms();
+        $this->users = User::select('id', 'name', 'email')->get();
+
 
         return view('livewire.questionnaire-livewire');
     }
